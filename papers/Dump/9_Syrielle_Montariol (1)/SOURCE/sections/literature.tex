@@ -1,0 +1,19 @@
+\section{Related Work} \label{sec:literature}
+
+Multimodal semantic role detection in memes is a relatively unique task, compared to other language--image multimodal task such as object classification and entity action detection, it requires a lot more contextual and cultural background.
+In this section, we list some related problems before introducing tools to tackle the task at hand in the next section.
+
+
+In recent years, social media platforms have seen a wave of multimodal data in diverse media types. This attracted the interest of researchers to combine modalities to solve various tasks with joint representations, where the model's encoder takes all the modalities as input, or separated representations, where all modalities are encoded separately \cite{baltruvsaitis2018multimodal}. 
+
+
+In the \textsc{constraint}'22 challenge, we tackle multimodal semantic role labeling (SRL). SRL is originally a Natural Language Processing (NLP) task which consists in labeling words in a sentence with different semantics roles to determine Who did What to Whom, When and Where \cite{gildea2002automatic,carreras2005introduction}; these roles are also known as thematic relations. It was extended to the computer vision domain through Visual SRL. Visual SRL benchmarks focus on situation recognition in images \cite{silberer-pinkal-2018-grounding,pratt2020grounded}; these tasks heavily rely on object detection systems for visual groundings \cite{yang2019detecting}. This differs from the methods we need to implement for the shared task, where the entities do not necessarily appear in the image.
+Moreover, in our case, the semantic role is taken from the point of view of a political argumentative: the perception of the entity by the author of the meme. This involves completely different features compared to labeling the thematic relations of the entity; in particular, cultural and contextual knowledge on the background of the meme.
+ 
+Another similar task is multimodal named entity recognition, which aims at identifying and classifying named entities in texts and images. It requires more in-domain knowledge compared to multimodal SRL; but most multimodal NER datasets are text-centric, with the image being an additional feature for the text-based prediction
+\cite{arshad2019aiding,chen-etal-2021-images}, while our task is more symmetrical or even image-centric. 
+
+Finally, many shared task on memes have been proposed in recent years, with a large variety of tasks: emotion classification (e.g.\ \textsc{memotion} task at SemEval 2020 \citealp{sharma-etal-2020-semeval}); hateful meme detection (e.g.\ the Hateful Meme Challenge \citealp{NEURIPS2020_hatefulmeme}) event clustering (e.g.\ \textsc{dankmemes} at \textsc{evalita} 2020 \cite{miliani2020dankmemes}); more fine-grained hateful content analysis (Fine-Grained Hateful Memes Detection \citealp{mathias-etal-2021-findings}, aiming at classifying the target attacked by the meme and the type of attack); or and detection of persuasion techniques (e.g.\ Semeval 2021 Task 6, \citealp{dimitrov-etal-2021-semeval}).
+
+
+%\E{TODO Class imbalance methods}

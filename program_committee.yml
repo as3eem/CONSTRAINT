@@ -1,0 +1,103 @@
+- entries:
+  - first_name: Amila 
+    institution: The University of Melbourne
+    last_name: Silva
+  - first_name: Andreas 
+    institution: University of Cambridge
+    last_name: Vlachos
+  - first_name: Anoop  
+    institution: Microsoft
+    last_name: Kunchukuttan
+  - first_name: Arkaitz 
+    institution: Queen Mary University of London
+    last_name: Zubiaga
+  - first_name: Balaji Vasan 
+    institution: Adobe Research
+    last_name: Srinivasan
+  - first_name: Firoj
+    institution: Qatar Computing Research Institute, HBKU
+    last_name: Alam
+  - first_name: Marc 
+    institution: Université de Caen
+    last_name: Spaniol
+  - first_name: Matt 
+    institution: University of Texas at Austin
+    last_name: Lease
+  - first_name: Monojit 
+    institution: Microsoft Research
+    last_name: Choudhury
+  - first_name: Tracy 
+    institution: Adobe Sensei and Search
+    last_name: King
+  - first_name: Paolo
+    institution: EURECOM
+    last_name: Papotti
+  - first_name: Paolo 
+    institution: Universitat Politècnica de València
+    last_name: Rosso
+  - first_name: Pushpak
+    institution: IIT Bombay
+    last_name:  Bhattacharya
+  - first_name: Roy Ka-Wei
+    institution: Singapore University of Technology and Design
+    last_name:  Lee
+  - first_name: Xinyi 
+    institution: Syracuse University
+    last_name: Zhou
+  - first_name: Yingtong  
+    institution: University of Illinois at Chicago
+    last_name: Dou
+  - first_name: Reza
+    institution: Syracuse University
+    last_name:  Zafarani
+  - first_name: Nitin
+    institution: University of Arkansas at Little Rock
+    last_name:  Agarwal
+  - first_name: Victoria
+    institution: Western University
+    last_name: Rubin 
+  - first_name: Francesco 
+    institution: Snap Research
+    last_name: Barbieri
+  - first_name: Ashique 
+    institution: Carnegie Mellon University
+    last_name: KhudaBukhsh
+  - first_name: Ugur 
+    institution: Georgia State University
+    last_name: Kursuncu
+  - first_name: Vagelis 
+    institution: University of California Riverside
+    last_name: Papalexakis
+  - first_name: Sibel 
+    institution: Rensselaer Polytechnic Institute
+    last_name: Adali
+
+  - first_name: Shivam 
+    last_name: Sharma
+    institution: IIIT Delhi, Wipro AI Research
+  - first_name: Chhavi
+    last_name: Sharma
+    institution: Wipro AI Research
+  - first_name: Shivani
+    last_name: Kumar
+    institution: IIIT Delhi
+  - first_name: Yash Kumar
+    last_name: Atri
+    institution: IIIT Delhi
+  - first_name: Sarah 
+    last_name: Masud
+    institution: IIIT Delhi
+  - first_name: Sunil  
+    last_name: Saumya
+    institution: IIIT Dharwad
+  - first_name: Megha 
+    last_name: Sundriyal
+    institution: IIIT Delhi
+  - first_name: Karan 
+    last_name: Goyal
+    institution: IIIT Delhi
+  - first_name: Anam 
+    last_name: Fatima
+    institution: IIIT Delhi
+  
+  role: Program Committee

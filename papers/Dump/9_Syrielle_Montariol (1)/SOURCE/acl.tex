@@ -1,0 +1,130 @@
+% This must be in the first 5 lines to tell arXiv to use pdfLaTeX, which is strongly recommended.
+\pdfoutput=1
+% In particular, the hyperref package requires pdfLaTeX in order to break URLs across lines.
+
+\documentclass[11pt]{article}
+
+% Remove the "review" option to generate the final version.
+\usepackage[]{acl}
+
+% Standard package includes
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{booktabs}
+\usepackage{comment}
+\usepackage{url}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{ifthen}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage[symbol]{footmisc}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.meta} % for more arrow shapes
+\usetikzlibrary{calc}
+\usetikzlibrary{colorbrewer} % for color schemes
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{positioning} % for above=of
+\usetikzlibrary{shapes.geometric} % for regular polygon
+\tikzset{arrow/.style={-{Latex}}} % Je préfère cette fleche
+%\NewDocumentCommand\E{m}{\textcolor{violet}{#1}} % Remarques par Étienne
+%\NewDocumentCommand\M{m}{\textcolor{red}{#1}} % Remarques par Syrielle
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+\title{Fine-tuning and Sampling Strategies for Multimodal Role Labeling of Entities under Class Imbalance}
+
+
+% Author information can be set in various styles:
+% For several authors from the same institution:
+% \author{Author 1 \and ... \and Author n \\
+%         Address line \\ ... \\ Address line}
+% if the names do not fit well on one line use
+%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
+% For authors from different institutions:
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \And  ... \And
+%         Author n \\ Address line \\ ... \\ Address line}
+% To start a seperate ``row'' of authors use \AND, as in
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \AND
+%         Author 2 \\ Address line \\ ... \\ Address line \And
+%         Author 3 \\ Address line \\ ... \\ Address line}
+
+\author{\ignorespaces
+	Syrielle Montariol\(^{\dagger*}\) \and Étienne Simon\(^{\ddagger*}\) \and Arij Riabi\(^\dagger\) \and Djamé Seddah\(^\dagger\)
+	%\AND\mdseries
+		\end{tabular}\hss\egroup \hfil\hfil\egroup
+		\vskip 0.125in plus 0.5fil minus 0.0625in
+		\hbox to \linewidth\bgroup\large \hfil\hfil
+		\hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}
+	\(^{\dagger}\)INRIA Paris \\
+	F-75012 Paris, France \\
+	\texttt{firstname.lastname@inria.fr}\And\mdseries
+	\(^{\ddagger}\)Sorbonne Université, CNRS, ISIR \\
+	F-75005 Paris, France \\
+	\texttt{etienne.simon@isir.upmc.fr}}
+
+\usepackage{xparse}
+\NewDocumentCommand\fone{}{\ensuremath{F_1}}
+\NewDocumentCommand\encoder{o}{\ensuremath{\operatorname{enc\IfValueT{#1}{_\text{#1}}}}}
+\NewDocumentCommand\decoder{o}{\ensuremath{\operatorname{dec\IfValueT{#1}{_\text{#1}}}}}
+\NewDocumentCommand\transposesym{}{\textsf{T}}
+\NewDocumentCommand\transpose{}{^{\mkern-1.5mu\transposesym}}
+
+\begin{document}
+\maketitle
+\renewcommand\thefootnote{\fnsymbol{footnote}}
+\footnotetext[1]{These authors contributed equally.}
+\renewcommand*\thefootnote{\arabic{footnote}}
+\begin{abstract}
+	We propose our solution to the multimodal semantic role labeling task from the \textsc{constraint}'22 workshop.
+	The task aims at classifying entities in memes into classes such as ``hero'' and ``villain''.
+	We use several pre-trained multi-modal models to jointly encode the text and image of the memes, and implement three systems to classify the role of the entities. We propose dynamic sampling strategies to tackle the issue of class imbalance. Finally, we perform qualitative analysis on the representations of the entities.
+\end{abstract}
+
+\input{sections/intro}
+\input{sections/literature}
+\input{sections/encoding}
+\input{sections/model}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\section{Acknowledgments}
+
+ We want to express our strong gratitude to Matt Post for the time he took providing manual annotation for our validation process.
+We also warmly thank the reviewers for their very valuable feedback.
+This work  received
+funding from the European Union’s Horizon 2020
+research and innovation programme under grant
+agreement No. 101021607 and the last author acknowledges the support of the French Research Agency via the ANR ParSiTi project (ANR16-CE33-0021).
+
+\bibliography{anthology,custom}
+\bibliographystyle{acl_natbib}
+
+\appendix
+\input{sections/annotations}
+
+\end{document}

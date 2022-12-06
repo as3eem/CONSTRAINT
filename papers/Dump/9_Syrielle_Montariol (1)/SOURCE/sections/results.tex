@@ -1,0 +1,100 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Experimental process}
+The train set consists of 17\,514 (meme, entity) pairs, the validation set 2\,069 pairs and the test set 2\,433 pairs. We did all the training on the datasets from the two domains, \textsc{covid}-19 and US politics jointly. The test set contains examples from both domains.
+The evaluation is done with Macro-\fone{} score; the OCR and the list of entities are provided along with the image of the meme. We run all experiments 5 times to check for the robustness of results and perform statistical testing.
+
+
+For CLIP, we use the biggest \texttt{L/14} CLIP-ViT model built on the Vision Transformers \cite{dosovitskiy2020image}. Both preliminary self-supervised fine-tuning and fine-tuning while doing the classification failed. This is probably due to the size and the format of the shared task dataset, much smaller and quite different from the training data of the pre-trained model; any fine-tuning leads the model to forget the knowledge it learned during pre-training. Consequently, we freeze all layers and tune only the classifier, with the architectures described in Section~\ref{sec:models}.  
+
+For VisualBERT, we fine-tune the \texttt{visualbert-vcr-coco-pre} model trained on caption generation and visual commonsense reasoning.
+
+For OFA \encoder[pool] with an MLP classifier, we obtained better results by fine-tuning the whole model from the \texttt{vqa\_large\_best} checkpoint\footnote{This refers to an OFA model pre-trained on 8 tasks then fine-tuned on VQA from the official OFA repository.} using a small 0.1 label smoothing and feeding the OCR and entity both to the encoder -- along with the image -- and to the decoder.
+Our OFA seq2seq model follows the same setup using the \texttt{ofa\_base} checkpoint.
+
+In the dataset, several entities are associated with more that one label.
+As this situation is infrequent, we consider the small amount of samples with multiple labels does not warrant a full-fledged multi-label classification setup.
+Thus, our models output a single categorical distribution. When multiple labels ought to be predicted for an entity (the entity appears twice in the list of entities associated with the meme), we predict them in order of likelihood.
+
+
+\subsection{Quantitative results}
+
+
+\begin{table}[t]
+	\centering
+	\input{figures/quantitative.tex}
+	\caption{Comparison of the best systems with the different encoders and classification architectures. All systems are run 5 times with 25 epochs. Encoders with a $^*$ in exponent are augmented with the list of entities as feature.}
+	\label{tab:models}	
+\end{table}
+
+\begin{table}[t]
+	\centering
+	\input{figures/sampling_results.tex}
+	\caption{Sampling results with the CLIP model and MLP classifier, with 500 batch per epoch.}
+	\label{tab:sampling}
+\end{table}
+
+\paragraph{Classifier results.}
+Table~\ref{tab:models} compares our main models on the \textsc{constraint}'22 test set.
+We measure the statistical significance of our results using a one-sided Welch's unequal variances \(t\)-test \citep{welch} under the null hypothesis that the macro-\fone{} are equals.
+Some hyperparameters are optimized on a per-model basis. In particular,  using the list of entities as additional feature improves the performance for VisualBERT and CLIP-attention but not for our best CLIP-MLP model.
+
+A CLIP \encoder[pool] together with an MLP classifier reached the best performances among our non-ensembling model pool, significantly (\(p<0.0004\)) improving over the OFA MLP combination.
+Using the unpooled features of the transformers (\encoder[full]) with an attention classifier underperform compared to the \encoder[pool]+MLP approach.
+However this difference is not significant in the case of VisualBERT (\(p<0.3\)).
+In particular, attention-based approaches have more variance than their MLP counterpart.
+The OFA seq2seq model reaches performances within the error margin of the OFA MLP model (\(p<0.14\)), which is not surprising since the two models are relatively close.
+The gap between VisualBERT and OFA is somewhat significant with \(p\)-values between 0.001 and 0.07 depending on the pairwise comparison.
+As expected, ensembling leads to the best result, regardless of the ensembling strategy; human annotators far exceed current model performances.
+We further develop human annotation in Section \ref{sec:discussion}.
+
+\paragraph{Sampling results.}
+Table~\ref{tab:sampling} compares the different sampling strategies represented in Figure~\ref{fig:sampling} for training a CLIP encoder with MLP model. As expected, using the empirical class distribution (\textsl{micro} strategy) leads to the worse score.
+While the \textsl{macro} strategy is in theory what we should maximise to improve the Macro-\fone{}, it is second worst among all strategies.
+The dynamic strategies, which use evolving sampling frequencies during training clearly outperform static strategies.
+In particular, for training CLIP, the \textsl{short cycle} strategy outperforms the other ones, but the difference with \textsl{long cycle} and \textsl{interpolate} is not statistically significant (\(p\)-values > 0.05).
+We observe similar tendencies with systems based on OFA and VisualBERT, with a slight advantage to the \textsl{interpolate} strategy over the \textsl{cycling} ones for the former.
+
+Despite the different subsampling strategies, the per-class performances vary widely, see for example the results for the CLIP MLP model with a \textsl{short cycling} subsampling strategy:
+\begin{center}
+\begin{tabular}{l r r r r}
+\toprule
+\% & hero & villain & victim & other \\
+\midrule
+\fone{} & 20 & 50 & 33 & 84 \\
+Precision & 15 & 46 & 26 & 90 \\
+Recall & 33 & 56 & 45 & 79 \\
+\bottomrule
+\end{tabular}
+\end{center}
+We observe similar results with all hyperparameter combination.
+These performances somewhat follow the empirical distribution of the classes, with the rarest class \texttt{hero} having the worst performance, and \texttt{victim} being not much better.
+This makes us consider sub-sampling \texttt{other} even below 25\%.
+However, this observation-inspired ``\textsl{super-macro}'' strategy did not prove successful, reaching an average Macro-\fone{} or 40.0, higher than the \textsl{micro} strategy but lower than the \textsl{macro} one.
+
+\subsection{Qualitative analysis}
+\begin{figure}
+	\centering
+	\input{figures/entities_pca.tex}%
+	\caption{%
+	    PCA of entity embeddings from CLIP.
+	    The explained variance is $33\%+18\%$.
+	    The entities appearing more than 30 times, with labels attached to the 16 most frequent ones.
+	    The color of the embeddings reflect the role attached to the entity in the train set (\tikz{\fill[black!20!Set3-A] (0,0) rectangle (1mm, 2mm);}~\texttt{hero}, \tikz{\fill[black!20!Set3-D] (0,0) rectangle (1mm, 2mm);}~\texttt{villain}, \tikz{\fill[black!20!Set3-C] (0,0) rectangle (1mm, 2mm);}~\texttt{victim}, \tikz{\fill[black!20!Set3-B] (0,0) rectangle (1mm, 2mm);}~\texttt{other}).
+	    When the entity is assigned different roles, the color are mixed together; e.g.\ covid19 \tikz{\fill[black!20!Set3-B!71!Set3-D] (0,0) rectangle (1mm, 2mm);} appears twice as often as \texttt{other} as it does as \texttt{villain}.
+	}
+	\label{fig:entities_pca}
+\end{figure}
+
+%Interpret XGBoost's decision tree in a qualitative way (which system worked best for what kind of meme?)
+We extract the embeddings of all entities in the train set as their are embedded by the CLIP model, right before being fed into the MLP or being used as query for the attention mechanism. Keeping only the ones occurring more than 30 times, we perform a PCA on their embeddings and represent the first two components in Figure \ref{fig:entities_pca}.
+Each point represents an entity, its colour depends on the distribution of labels that are attributed to the entity, normalised by the global frequency of each label in the full dataset. We keep only the two most frequent labels associated with the entity for colouring.
+We can see that inanimate objects tend to be labeled as \texttt{other}.
+On the other hand, large political parties are nearly always portrayed as \texttt{villain} with America as a \texttt{victim}.
+The somewhat unexpected heroic status of the libertarian party can be explained by the presence of advertisements in the form of memes in the dataset.
+We can see that CLIP was able to separate the entities according to their probable class even before processing the meme.
+Still, the model can't clearly distinguish between most heroes and villains without seeing the meme, which is to be expected.
+
+%Interpret the attention on the meme and the text
+%Interpret the attention on the different features

@@ -1,0 +1,15 @@
+\section{Human Annotations}
+\label{sec:annotations}
+To assess the quality of the dataset and put our results into perspective, we hand labeled part of the datasets.
+The team of five annotators is composed of researchers in Natural Language Processing. One of them is American native and the other 4 are European. Two of them are in the 40-50s age range and three of them are in the 20-30s.
+The annotators were all given the same 100 samples to label.
+To have a better estimate of the macro-\fone{}, we sampled 25 memes for each gold role.
+The annotator were given the class definitions and were informed that the labels had a uniform distribution.
+The annotation script as well as the answers of the annotators are available with the remainder of our code at \url{https://github.com/smontariol/mmsrl_constraint}.
+
+We compute the macro-\fone{} score of each annotator, resulting in an average score of 0.65. The minimum score was 0.57 and the maximum 0.69. These scores show the difficulty of the task for a human. For comparison, the best score during the challenge was 0.58, still considerably lower than the human best score.
+
+To measure the inter-annotator agreement, we compute the average pair-wise Cohen's $\kappa$ \cite{cohenkappa}. It is similar to measuring the percentage of agreement, but taking into account the possibility of the agreement between two annotators to occur by chance for each annotated sample.
+The average Cohen's $\kappa$ is 0.47, indicating a ``moderate'' agreement according to \citet{cohenkappa}. However, it also indicates that less than one third of the annotations are reliable \cite{mchugh2012interrater}.
+
+

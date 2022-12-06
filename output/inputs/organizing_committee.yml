@@ -1,0 +1,38 @@
+- members:
+  - first_name: Tanmoy
+    institution: IIIT Delhi, India
+    last_name: Chakraborty
+  - first_name: Md. Shad
+    institution: IIIT Delhi, India
+    last_name: Akhtar
+  - first_name: Kai
+    institution: Illinois Institute of Technology, USA
+    last_name: Shu
+  - first_name: H. Russell
+    institution: Arizona State University, USA
+    last_name: Bernard
+  - first_name: Maria
+    institution: Queen Mary, University of London, UK
+    last_name: Liakata
+  - first_name: Preslav
+    institution: Qatar Computing Research Institute, HBKU, Qatar
+    last_name: Nakov
+  role: Program Committee Chairs
+
+- members:
+  - first_name: Aseem
+    institution: IIIT Delhi, India
+    last_name: Srivastava
+  role: Web Chair
+
+- members:
+  - first_name: Isabelle 
+    institution: University of Copenhagen, Denmark
+    last_name: Augenstein
+  - first_name: Smaranda 
+    institution: Columbia University, USA
+    last_name: Muresan
+  - first_name:  Andreas 
+    institution: University of Cambridge, UK
+    last_name: Vlachos
+  role: Invited Speakers

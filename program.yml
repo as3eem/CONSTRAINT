@@ -1,0 +1,182 @@
+- end_time: 2022-05-27 09:10:00
+  start_time: 2022-05-27 09:00:00
+  title: Opening Remarks
+
+- start_time: 2022-05-27 09:10:00
+  end_time: 2022-05-27 10:10:00
+  title: "Keynote 1: Isabelle Augenstein | Automatically Detecting Scientific Misinformation"
+
+# - start_time: 2022-05-27 10:10:00
+#   end_time: 2022-05-27 10:30:00
+#   title: "Regular Paper 1 | M-BAD: A Multilabel Dataset for Detecting Aggressive Texts and Their Targets"
+
+- title: Regular Paper Session - I
+  start_time: 2022-05-27 10:10:00
+  end_time: 2022-05-27 10:30:00
+  subsessions:
+    - start_time: 2022-05-27 10:10:00
+      end_time: 2022-05-27 10:30:00
+      title: Regular Paper Session - I
+      papers:
+        - end_time: 2022-05-27 10:30:00
+          id: 1
+          start_time: 2022-05-27 10:10:00
+
+- start_time: 2022-05-27 10:30:00
+  end_time: 2022-05-27 11:00:00
+  title: Coffee break
+
+- start_time: 2022-05-27 11:00:00
+  end_time: 2022-05-27 12:00:00
+  title: "Keynote 2: Andreas Vlachos | Fact-Checking Using Structured and Unstructured Information"
+
+
+- title: Regular Paper Session - II
+  start_time: 2022-05-27 12:00:00
+  end_time: 2022-05-27 13:00:00
+  subsessions:
+    - end_time: 2022-05-27 12:00:00
+      start_time: 2022-05-27 13:00:00
+      title: Regular Paper Session - II
+      papers:
+        - end_time: 2022-05-27 12:20:00
+          id: 2
+          start_time: 2022-05-27 12:00:00
+        - end_time: 2022-05-27 12:40:00
+          id: 3
+          start_time: 2022-05-27 12:20:00
+        - end_time: 2022-05-27 13:00:00
+          id: 11
+          start_time: 2022-05-27 12:40:00
+
+# - start_time: 2022-05-27 12:00:00
+#   end_time: 2022-05-27 12:20:00
+#   title: "Regular Paper 2 | How does fake news use a thumbnail? CLIP-based Multimodal Detection on the Unrepresentative News Image"
+
+# - start_time: 2022-05-27 12:20:00
+#   end_time: 2022-05-27 12:40:00
+#   title: "Regular Paper 3 | Detecting False Claims in Low-Resource Regions: A Case Study of Caribbean Islands"
+
+- start_time: 2022-05-27 13:00:00
+  end_time: 2022-05-27 14:00:00
+  title: Lunch Break
+
+- start_time: 2022-05-27 14:00:00
+  end_time: 2022-05-27 15:00:00
+  title: "Keynote 3: Smaranda Muresan | The Role of Text Generation in Fighting Hostile Posts"
+
+- start_time: 2022-05-27 15:00:00
+  end_time: 2022-05-27 15:30:00
+  title: Coffee Break
+
+- title: Shared Task Session
+  start_time: 2022-05-27 15:30:00
+  end_time: 2022-05-27 17:15:00
+  subsessions:
+    - end_time: 2022-05-27 17:15:00
+      start_time: 2022-05-27 15:30:00
+      title: Shared Task Session
+      papers:
+        - end_time: 2022-05-27 15:50:00
+          id: 10
+          start_time: 2022-05-27 15:30:00
+        - end_time: 2022-05-27 16:00:00
+          id: 4
+          start_time: 2022-05-27 15:50:00
+        - end_time: 2022-05-27 16:10:00
+          id: 5
+          start_time: 2022-05-27 16:00:00
+        - end_time: 2022-05-27 16:20:00
+          id: 6
+          start_time: 2022-05-27 16:10:00
+        - end_time: 2022-05-27 16:30:00
+          id: 7
+          start_time: 2022-05-27 16:20:00
+        - end_time: 2022-05-27 16:40:00
+          id: 8
+          start_time: 2022-05-27 16:30:00
+        - end_time: 2022-05-27 16:50:00
+          id: 9
+          start_time: 2022-05-27 16:40:00
+
+
+
+# - start_time: 2022-05-27 15:30:00
+#   end_time: 2022-05-27 15:50:00
+#   title: "Shared Task Overview | Findings of the CONSTRAINT 2022 Shared Task on Detecting the Hero, the Villain, and the Victim in Memes"
+
+# - start_time: 2022-05-27 15:50:00
+#   end_time: 2022-05-27 16:00:00
+#   title: "Shared Task Paper 1 | DD-TIG at Constraint@ACL2022: Multimodal Understanding and Reasoning for Role Labeling of Entities in Hateful Memes"
+
+# - start_time: 2022-05-27 16:00:00
+#   end_time: 2022-05-27 16:10:00
+#   title: "Shared Task Paper 2 | Are you a hero or a villain? A semantic role labelling approach for detecting harmful memes."
+
+# - start_time: 2022-05-27 16:10:00
+#   end_time: 2022-05-27 16:20:00
+#   title: "Shared Task Paper 3 | Logically at the Constraint 2022: Multimodal role labelling"
+
+# - start_time: 2022-05-27 16:20:00
+#   end_time: 2022-05-27 16:30:00
+#   title: "Shared Task Paper 4 | Combining Language Models and Linguistic Information to Label Entities in Memes"
+
+# - start_time: 2022-05-27 16:30:00
+#   end_time: 2022-05-27 16:40:00
+#   title: "Shared Task Paper 5 | Detecting the Role of an Entity in Harmful Memes: Techniques and their Limitations"
+
+# - start_time: 2022-05-27 16:40:00
+#   end_time: 2022-05-27 16:50:00
+#   title: "Shared Task Paper 6 | Fine-tuning and Sampling Strategies for Multimodal Role Labeling of Entities under Class Imbalance"
+
+# - start_time: 2022-05-27 16:50:00
+#   end_time: 2022-05-27 17:10:00
+#   title: "Regular Paper 4 | Document Retrieval and Claim Verification to Mitigate COVID-19 Misinformation"
+
+- start_time: 2022-05-27 16:50:00
+  end_time: 2022-05-27 17:15:00
+  title: Closing
+
+
+
+
+
+# - title: Shared Task Papers
+#   start_time: 2022-05-27 09:30:00
+#   end_time: 2022-05-27 11:30:00
+#   subsessions:
+#     - end_time: 2022-05-27 10:20:00
+#       papers:
+#         - end_time: 2022-05-27 09:40:00
+#           id: 3
+#           start_time: 2022-05-27 09:30:00
+#         - end_time: 2022-05-27 09:50:00
+#           id: 2
+#           start_time: 2022-05-27 09:40:00
+#         - end_time: 2022-05-27 10:10:00
+#           id: 4
+#           start_time: 2022-05-27 10:00:00
+#         - end_time: 2022-05-27 10:20:00
+#           id: 1
+#           start_time: 2022-05-27 10:10:00
+#       start_time: 2022-05-27 09:30:00
+#       title: Generation + Task-Oriented Dialogues (1)
+#       chair: John Doe
+#       location: Main Room
+#     - end_time: 2022-05-27 10:45:00
+#       start_time: 2022-05-27 10:20:00
+#       title: Generation + Task-Oriented Dialogues (1) live QA
+#       chair: John Doe
+#       location: Main Room
+#     - end_time: 2022-05-27 11:30:00
+#       papers:
+#         - end_time: 2022-05-27 10:55:00
+#           id: 5
+#           start_time: 2022-05-27 10:45:00
+#         - end_time: 2022-05-27 11:05:00
+#           id: 6
+#           start_time: 2022-05-01 10:55:00
+#       start_time: 2022-05-01 10:45:00
+#       title: Demo (1) pre-recorded presentations + live QA
+#       chair: John Doe
+#       location: Main Room

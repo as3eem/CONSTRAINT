@@ -1,0 +1,54 @@
+\section{Multimodal Encoding}
+\label{sec:encoding}
+Since we experiment with deep neural networks, we need to obtain distributed representations of our inputs.
+To this end, we use pre-trained models with good performances on popular datasets.
+These models are multimodal transformers, that we use to encode image and caption's OCR into a common latent space.
+While transformers were originally developed for natural language processing \citep{transformers, bert}, they subsequently became ubiquitous in computer vision models as well \citep{dosovitskiy2020image}.
+To process an image, it is first cut into a sequence of \(P\times P\times C\) patches.
+These patches are then projected into the transformer input dimension, either using a single linear layer, or using a full-fledged CNN architecture.
+
+The output of a transformer has the same length as its input.
+We call this length \(N\); it is the number of patches in the image, the number of tokens in the OCR, or the sum of the two for multimodal transformers.
+Thereafter, we refer to an encoded meme image \(i\) and OCR \(o\) as \(\encoder[full](o, i)\in\mathbb{R}^{N\times d}\).
+This output can be further pooled into a fixed-size representation \(\encoder[pool](o, i)\in\mathbb{R}^d\).
+We now describe what models are behind these encoder functions.
+
+\subsection{CLIP and VisualBERT}
+The multi-modal features are extracted from the caption's OCR and the meme image using two vision-language models, CLIP and VisualBERT. 
+
+CLIP (Contrastive Language–Image Pre-training, \citealp{radford2021learning}) is trained using text as supervision to encode images, with 400 million image–text pairs available on the internet. The training task is to predict which text is associated with an image, from all text snippets of the batch, using a contrastive objective instead of a predictive one for computational efficiency.
+CLIP trains an image encoder and a text encoder jointly,  maximizing the cosine similarity of the image and text embeddings in the joint representation space for positive pairs, and minimizing similarity of negative pairs. The strength of this task is to offer large robustness and zero-shot capability to the model, to transfer to many classification tasks. Image encoding is done using a variation of the Vision Transformer (ViT, \citealp{dosovitskiy2020image}). Text encoding is done using a GPT-like language model \cite{radford2019language}.\footnote{The sequence length is limited to 76 byte-pairs. In the \textsc{constraint} task corpus, 76 byte-pairs corresponds to the 95th quantile of OCR text length in the test set, and slightly more in the train set.}
+
+Similar to CLIP, we use a VisualBERT model \cite{li2019visualbert} trained on visual commonsense reasoning and image captioning. 
+VisualBERT uses self-attention to align parts of the text with regions of the image and build a joint representation.
+It mostly differs from CLIP in its training procedure in three phases:
+task-agnostic pre-training, task-specific pre-training, and task-specific fine-tuning. Moreover, VisualBERT does not include an image encoder; the patch features are extracted beforehand with pre-trained image classification and segmentation models. We extract features using FasterRCNN \cite{ren2015faster}, EfficientNet \cite{tan2019efficientnet} and VGG \cite{SimonyanZ14a}.  \citet{bucur2022blue} showed that EfficientNet features prove useful for sentiment and emotion analyses of meme, while \citet{pramanick-etal-2021-momenta-multimodal} prove the efficiency of VGG for detecting harmful memes and identifying their target.
+
+The output of both CLIP and VisualBERT can either be pooled (\encoder[pool]) or be used as-is (\encoder[full]).
+
+
+
+%To perform attention across all features, we use the architecture of MOMENTA \cite{pramanick-etal-2021-momenta-multimodal}. We perform self-attention on textual features (the caption and all entities) and on image features, before combining them with CLIP encoded OCR and image using intra-modality attention. Finally, we use cross-modality attention and weighted feature concatenation to fuse the image and text global representation, as both modalities have varying importance depending on the sample.
+
+
+\subsection{OFA}
+A second method we experiment with to obtain a distributed representation of text and images is OFA (One For All, \citealp{ofa}).
+OFA is based on an encoder--decoder architecture pretrained on several visual, textual and cross-modal tasks.
+A key point of OFA is to leverage a diverse set of training tasks to obtain good zero-shot performances.
+Despite this claim, we did not obtain satisfactory zero-shot results.
+We hypothesize that this is due to the noisy OCR and to the nature of meme role labeling which is radically different from what OFA was pre-trained on.
+
+All tasks are expressed as sequence-to-sequence problems, such that a single OFA model can be used without the need of task-specific layers.
+For example, one of the pretraining task is image captioning; for this task, the model is trained to predict the caption given the image and the text ``What does the image describe?'' as inputs.
+
+The input image and text are fed jointly to the encoding transformer using modality-specific positional embeddings.
+The image representation is built from \(16\times16\) patches embedded by a ResNet \citep{resnet}.
+The decoding transformer is trained as a causal language model conditioned on the encoder's output with a standard cross-entropy loss.
+%\E{OFA can also generate images using an output representation built by VQGAN \citep{vqgan}.}
+When the output is constrained on a small number of classes, the model is trained and evaluated on the task's output domain, not on the whole output vocabulary.
+
+For the meme role labeling task, we feed OFA  with the image as well as the following instruction:
+\begin{trivlist}\item\relax
+\em ``What is the category of \textsc{entity} between hero, villain and victim? \textsc{ocr}''
+\end{trivlist}
+As we detail in the next Section~\ref{sec:models}, we train OFA either as a sequence to sequence problem (resulting in a pair of models \encoder[\textsc{ofa}]--\decoder[\textsc{ofa}]) or by adding a classification head on top of the decoder (which can be used as a standard \encoder[pool]).\footnote{For the OFA model, \(\encoder[pool]\) refers to the output of the penultimate layer of OFA's decoder, while we use \encoder[\textsc{ofa}] to reference only the OFA's encoder.}

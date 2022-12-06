@@ -1,0 +1,24 @@
+\section{Discussion}
+\label{sec:discussion}
+The multimodal aspect is crucial in this task. When looking at entity names, only 15\% have an exact surface form match in the caption's OCR; moreover, the OCR is often incomplete or noisy (see example in Figure \ref{fig:meme} with the ``Exit'' sign popping in the middle of the caption).
+Thus, using only the text is far from sufficient. On the other hand, recognising the entities in the image of the meme is not an easy task.
+As stated in the introduction, the image and the text are often not directly related. Moreover, the image often contains elements not seen in common image datasets; for example, meme creators often perform montages like swapping faces and objects.
+Overall, a lot of commonsense and cultural knowledge is needed for the model to understand what the meme is about. 
+
+The absence of contextual information also makes the task difficult for humans. 
+To evaluate the difficulty of the task, we performed human annotation of a sample of 100 (image, entity) pairs with five annotators. Details of annotation process can be found in Appendix \ref{sec:annotations}. The average pair-wise Cohen's $\kappa$ \cite{cohenkappa}, used to measure the inter-annotator agreement, is 0.47. It indicates a ``moderate'' agreement according to \citet{cohenkappa}. However, it also shows that less than one third of the annotations are reliable \cite{mchugh2012interrater}. Moreover, the macro-\fone{} scores are relatively low: the average is 0.65 and the maximum 0.69. 
+Having metadata such as source website and date of publication of the meme would help human and algorithmic annotators alike.
+
+Finally, from a real-world point of view, this task is not entirely complete: the OCR and the list of entities are already provided in the dataset, and we only have to perform the classification. In a real-life setting, we would create a multi-task system jointly extracting the caption, detecting entities and classifying them; the three tasks complementing each other.
+
+
+%Limits of the model: TODO
+
+
+
+%Other problems: The OCR is often incomplete, with missing letters, and overall not a style seen by language models. Sometimes, the majority of the text of the meme is missing from the OCR because the image quality was too low for the OCR system to capture it. Due to the organisation of the image, the text snippets are often in the wrong order in the OCR.
+%Some entities are empty (even in the test set!) or with only one character like '?', many memes have no entities
+%Some entities are multi-labeled in an absurd way.
+%Some entities appear several times in the same meme with slightly different denomination and often different labels... (e.g. coronavirus and virus),  and multi-word entities divided into two and separated in different classes...
+
+

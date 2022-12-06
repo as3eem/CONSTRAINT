@@ -1,0 +1,159 @@
+\begin{tikzpicture}[
+			vector/.style={draw, rectangle, fill=black!30, inner sep=0mm, minimum width=6mm, minimum height=1mm},
+			block/.style={draw, rectangle, rounded corners=0.1cm},
+			value/.style={inner sep=0},
+			text shadow/.code args={[#1]#2at#3(#4)#5}{
+				\pgfkeysalso{/tikz/.cd,#1}%
+				\foreach \angle in {0,5,...,359}{
+					\node[#1,text=white] at ([shift={(\angle:.5pt)}] #4){#5};
+				}
+			},
+		]
+	\begin{scope}[shift={(0, 0)}]
+		\node at (2.5, -0.5) {\textbf{MLP}};
+		\node[vector] (vimage)  at (0.9, 0.5) {};
+		\node[vector] (vocr)    at (2.1, 0.5) {};
+		\node[vector] (ventity) at (3.5, 0.5) {};
+
+		\node[below=0mm of vimage,  anchor=north] {\strut image};
+		\node[below=0mm of vocr,    anchor=north] {\strut OCR};
+		\node[below=0mm of ventity, anchor=north] {\strut entity};
+
+		\node[block] (encmeme)   at (1.5, 1.3) {\encoder[pool]};
+		\node[block] (encentity) at (3.5, 1.3) {\encoder[pool]};
+		\draw[arrow] (vimage)  -- (encmeme);
+		\draw[arrow] (vocr)    -- (encmeme);
+		\draw[arrow] (ventity) -- (encentity);
+
+		\node[vector, anchor=east] (embedmeme)   at (2.5, 2.1) {};
+		\node[vector, anchor=west] (embedentity) at (2.5, 2.1) {};
+		\draw[arrow] (encmeme) -- (embedmeme);
+		\draw[arrow] (encentity) -- (embedentity);
+
+		\node[block] (mlp)   at (2.5, 2.9) {MLP};
+		\draw[arrow] (embedmeme.north east) -- (mlp);
+
+		\node[vector] (vrole) at (2.5, 3.7) {};
+		\node[above=0mm of vrole, anchor=south] {role};
+		\draw[arrow] (mlp) -- (vrole);
+	\end{scope}
+
+	\begin{scope}[shift={(6.3, 2.6)}]
+		\node at (0.6, -3.1) {\textbf{Attention}};
+		\node (mk) at (0.12, -0.25) {};
+		\node (mv) at (0.12, 0.55) {};
+		\draw (0, -0.5) rectangle (2, 0);
+		\draw (0, 0.3) rectangle (2, 0.8);
+
+		\draw (0, 0.1) rectangle (2, 0.2);
+		\node[rotate=270] at (2.2, 0.17) {\scriptsize softmax};
+		\draw[fill=red!60] (0.4, 0.1) rectangle (0.5, 0.2);
+		\draw[fill=red!10] (0.5, 0.1) rectangle (0.6, 0.2);
+		\draw[fill=red!20] (1.2, 0.1) rectangle (1.3, 0.2);
+		\draw[fill=red!40] (1.3, 0.1) rectangle (1.4, 0.2);
+		\draw[fill=red!30] (1.4, 0.1) rectangle (1.5, 0.2);
+		\draw[fill=red!10] (1.8, 0.1) rectangle (1.9, 0.2);
+
+		\draw[fill=green!60] (0.4, 0.3) rectangle (0.5, 0.8);
+		\draw[fill=green!10] (0.5, 0.3) rectangle (0.6, 0.8);
+		\draw[fill=green!20] (1.2, 0.3) rectangle (1.3, 0.8);
+		\draw[fill=green!40] (1.3, 0.3) rectangle (1.4, 0.8);
+		\draw[fill=green!30] (1.4, 0.3) rectangle (1.5, 0.8);
+		\draw[fill=green!10] (1.8, 0.3) rectangle (1.9, 0.8);
+
+		\draw[fill=blue!60] (0.4, -0.5) rectangle (0.5, 0);
+		\draw[fill=blue!10] (0.5, -0.5) rectangle (0.6, 0);
+		\draw[fill=blue!20] (1.2, -0.5) rectangle (1.3, 0);
+		\draw[fill=blue!40] (1.3, -0.5) rectangle (1.4, 0);
+		\draw[fill=blue!30] (1.4, -0.5) rectangle (1.5, 0);
+		\draw[fill=blue!10] (1.8, -0.5) rectangle (1.9, 0);
+
+		\node[text shadow={[align=center,text width=3cm] at (1,0.55) {Value}}] at (1,0.55) {Value};
+		\node[text shadow={[align=center,text width=3cm] at (1,-0.25) {Key}}] at (1,-0.25) {Key};
+
+		\begin{scope}[shift={(-2.5, -2.6)}]
+			\node[vector] (vimage)  at (1.3, 0.5) {};
+			\node[vector] (vocr)    at (2.5, 0.5) {};
+			\node[vector] (ventity) at (4.5, 0.5) {};
+
+			\node[below=0mm of vimage,  anchor=north] {\strut image};
+			\node[below=0mm of vocr,    anchor=north] {\strut OCR};
+			\node[below=0mm of ventity, anchor=north] {\strut entity};
+
+			\node[block] (encmeme)   at (1.9, 1.3) {\encoder[full]};
+			\node[block] (encentity) at (4.5, 1.3) {\encoder[pool]};
+			\node[block] (elinear)   at (3.1, 1.3) {fc};
+
+			\draw[arrow] (vimage)  -- (encmeme);
+			\draw[arrow] (vocr)    -- (encmeme);
+			\draw[arrow] (ventity) -- (encentity);
+			\draw[arrow] (encentity) -- (elinear);
+		\end{scope}
+
+		\coordinate (inter) at (-1.4, -0.85);
+		\coordinate (tkey) at (0, -0.25);
+		\coordinate (ukey) at (1, -0.5);
+		\coordinate (tval) at (0, 0.55);
+		\coordinate (uval) at (1, 0.8);
+
+		\node[block, left=4mm of tkey, anchor=east] (klinear) {fc};
+		\node[block, left=4mm of tval, anchor=east] (vlinear) {fc};
+
+		\draw[rounded corners=1mm, arrow] (elinear) -- (elinear|-ukey);
+		\draw[rounded corners=1mm, arrow] (encmeme) -- (encmeme|-inter) -- (inter) -- (inter|-tkey) -- (klinear);
+		\draw[rounded corners=1mm, arrow] ($(inter) + (0, 5mm)$) -- (inter|-tval) -- (vlinear);
+
+		\draw[arrow] (klinear) -- (tkey);
+		\draw[arrow] (vlinear) -- (tval);
+
+		\node[value, anchor=north west, yshift=-0.5mm] at (ukey-|elinear) {\scriptsize\kern1mm\relax inner product};
+		\node[value, anchor=south west, yshift=0.5mm] at (uval-|elinear) {\scriptsize\kern1mm\relax weighted sum};
+
+		\coordinate[above=6.5mm of uval] (top);
+		\node[block] (linear) at (top-|elinear) {fc};
+		\node[vector, right=5mm of linear, anchor=west] (vrole) {};
+		\node[above=0mm of vrole, anchor=south] {role};
+		\draw[arrow] (uval-|elinear) -- (linear);
+		\draw[arrow] (linear) -- (vrole);
+	\end{scope}
+
+	\begin{scope}[shift={(9.2, 0)}]
+		\node at (2.5, -0.5) {\textbf{Seq2seq}};
+		\node[vector] (vimage)  at (1.3, 0.5) {};
+		\node[vector] (vocr)    at (2.5, 0.5) {};
+		\node[vector] (ventity) at (3.7, 0.5) {};
+
+		\node[below=0mm of vimage,  anchor=north] {\strut image};
+		\node[below=0mm of vocr,    anchor=north] {\strut OCR};
+		\node[below=0mm of ventity, anchor=north] {\strut entity};
+
+		\node[block] (enc)   at (2.5, 1.3) {\encoder[\textsc{ofa}]};
+		\draw[arrow] (vimage)  -- (enc);
+		\draw[arrow] (vocr)    -- (enc);
+		\draw[arrow] (ventity) -- (enc);
+
+		\node[vector] (embed)   at (2.5, 2) {};
+		\draw[arrow] (enc) -- (embed);
+
+		\coordinate (inter) at (2.5, 2.2);
+
+		\foreach \i/\x/\f in {1/1/1, 2/2.5/1, 3/4/1, i/6/0.3}{
+			\begin{scope}[opacity=\f]
+				\node[block] (dec\i)   at (\x, 2.9) {\decoder[\textsc{ofa}]};
+				\draw[arrow, rounded corners=1mm] (embed) -- (inter) -- (inter-|dec\i) -- (dec\i);
+				\node[vector] (vrole\i) at (\x, 3.9) {};
+				\coordinate (vn\i) at ($(vrole\i.east) + (2mm, 0)$);
+				\node[above=0mm of vrole\i, anchor=south] (role\i) {\(\ell_\i\)};
+				\draw[arrow] (dec\i) -- (vrole\i);
+			\end{scope}
+		}
+	\end{scope}
+	\node at ($(role3)!0.5!(rolei)$) {\(\cdots\)};
+	\node at ($(dec3)!0.5!(deci)$) {\(\cdots\)};
+	\coordinate (top) at (2.5, 3.5);
+	\draw[arrow, rounded corners=1mm, black!30] (vrole2.east) -- (vn2) -- (vn2|-top) -- (top-|deci.150) -- (deci.150);
+	\draw[arrow, rounded corners=1mm, black!30] (vrole3.east) -- (vn3) -- (vn3|-top) -- (top-|deci.150) -- (deci.150);
+	\draw[arrow, rounded corners=1mm] (vrole1.east) -- (vn1) -- (vn1|-top) -- (top-|dec2.150) -- (dec2.150);
+	\draw[arrow, rounded corners=1mm] (vrole1.east) -- (vn1) -- (vn1|-top) -- (top-|dec3.150) -- (dec3.150);
+	\draw[arrow, rounded corners=1mm] (vrole2.east) -- (vn2) -- (vn2|-top) -- (top-|dec3.150) -- (dec3.150);
+\end{tikzpicture}

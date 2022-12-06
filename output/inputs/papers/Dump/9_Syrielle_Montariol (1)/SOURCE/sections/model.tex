@@ -1,0 +1,115 @@
+\section{Models}
+\label{sec:models}
+\begin{figure*}
+	\centering
+	\input{figures/models.tex}
+	\caption{%
+	    Our three classifiers.
+	    Note that each classifier uses a different combination of encoders.
+	    MLP is used with \encoder[pool], Attention requires \encoder[full], while Seq2seq requires an \encoder[\textsc{ofa}]--\decoder[\textsc{ofa}] pair.
+	}
+	\label{fig:models}
+\end{figure*}
+
+We now describe how we use the encoded text and images for semantic role labeling.
+
+\subsection{Classification}
+\label{sec:classification}
+We experiment with three different methods to classify a \((\text{meme}, \text{entity})\) pair, depending on what kind of representation we get from the encoder.
+The representation of the meme is composed of the image's representation along with the encoded caption's OCR, and any extra features such as the list of entities related to the meme.
+For ease of notation, we group under ``OCR'' all extra features which were extracted from the meme, and we refer to them using a single variable \(o = (\text{OCR}, \text{caption, }\dotsc)\). Image features are referred to by  \(i\) and the encoded list of entities by  \(e\).
+All classifiers are illustrated in Figure~\ref{fig:models}.
+
+\paragraph{Multilayer perceptron (MLP)}
+When the output of the encoder is of fixed size, we use a 2-layers MLP classifier.
+The input of the classifier is made from the encoding of the OCR, image and entity.
+The representation of the entity is obtained using the same transformer used to process the OCR.
+The output of the model is a softmax on the four possible roles:
+\begin{equation*}
+	P(r\mid o, i, e) \propto \exp \operatorname{MLP}\left(\begin{bmatrix}\encoder[pool](o, i)\\\encoder[pool](e)\end{bmatrix}\right)_r.
+\end{equation*}
+This model is trained using a standard cross-entropy loss.
+Depending on the encoder, we either train the MLP alone, or the MLP and the encoder jointly.
+
+\paragraph{Attention}
+When the representations of the OCR and image are not pooled along the sequence's length, we use an attention mechanism.
+In this case, the query of the attention is the entity we wish to classify, while the memory is built from a concatenation of the image and OCR encoded by CLIP or VisualBERT:
+\begin{align*}
+	\alpha_j & \propto \exp \left( \encoder[pool](e)\transpose{} \bm{W}_k \encoder[full](o, i)_j \right), \\
+	\bm{a} & = \operatorname{ReLU}\left(\sum_j \alpha_j \bm{W}_v \encoder[full](o, i)_j\right),
+\end{align*}
+where \(\bm{W}_k\) and \(\bm{W}_v\) are parameters used to project the encoded meme for use as attention key and value.
+We classify the attention output \(\bm{a}\), using a softmax layer \(P(r\mid o, i, e) \propto \exp(\bm{W}_p \bm{a})_r\).
+
+Since the encoders already use positional embeddings, we do not add this information to our classifier's attention.
+However, we do use segment embeddings to distinguish the vectors encoding the image, OCR or entity list in the encoder's output. We use different MLP layers depending on whether a vector correspond to an input image, OCR or entity list.
+This model is also trained by minimizing the cross-entropy with gold labels.
+
+\paragraph{Seq2seq}
+When using an OFA encoder, we also attempt to stay in the sequence to sequence framework and train the model to generate the class labels.
+In this case, if we denote the label's tokens by \(\bm{\ell}\), the model is trained to maximize the likelihood that the meme \((o, i)\) has the gold target \(\bm{\ell}\):
+\begin{equation*}
+	P(\ell_k \mid \bm{\ell}_{<k}, o, i) \propto \decoder[ofa](\encoder[ofa](o, i), \bm{\ell}_{<k})_{\ell_k},
+\end{equation*}
+where \(\bm{\ell}_{<k} = [\ell_1, \ell_2, \dotsc, \ell_{k-1}]\transpose\) refers to the list of previous tokens.
+To evaluate this model, the log-likelihood of the possible labels are summed along sequence length:
+\begin{equation*}
+	\hat{r} = \arg\,\max_r P(r \mid o, i) \propto \prod_k P(\ell^{(r)}_k \mid \ell^{(r)}_{<k}, o, i),
+\end{equation*}
+where \(\bm{\ell}^{(r)}\) designates the list of tokens for the label \(r\), such as \([\texttt{vil}, \texttt{lain}]\transpose\).
+
+
+\paragraph{Additional features}
+As explained in Section \ref{sec:literature}, our task is quite different from most multimodal tasks on which the encoders were trained; it is much more abstract and requires a lot of additional background knowledge.
+Thus, when using CLIP and VisualBERT, we add supplementary features as input to the classification model (MLP and attention).
+
+We add as textual features the list of entities associated with the meme, this list is directly available in the dataset. We encode the entities' names using the same encoder as the system (CLIP or VisualBERT).\footnote{We also experiment with adding generated captions as features. We generate them using an OFA model trained for automatic caption generation. However, the captions are very generic and descriptive; for example the entities names are not captured by the model. This features does not improve the systems, hence we do not further develop it in the results section.} We also add to the system the image features that were extracted using VGG, EfficientNET and FRCNN.
+%The entities are encoded using SentenceTransformer \cite{reimers2019sentence}, with a Distil-Roberta model trained on paraphrasing.
+
+\subsection{Dealing with Class Imbalance}
+\label{sec:subsampling}
+The dataset faces a large class imbalance, with the class \texttt{other} being over-represented (78\% in the train set) and classes \texttt{hero} and \texttt{victim} consisting of only 2.7\% and 5.2\% of the train set respectively.
+Thus, training on the raw dataset might lead to overfitting and over-predicting the majority class.
+Moreover, recall that the evaluation metric is Macro-\fone{}, which weighs each class equally; hence the importance of solving the class imbalance issue.
+
+Our first solution was to weight labels in the loss. This loss penalisation led to poor performances; we suspect this is due to the working of the optimization algorithm we used.
+Adam and its variants estimate the distribution of the gradients using exponential moving averages; these estimates are faulty when the magnitude of the loss changes often.
+
+A common strategy is over-sampling the low-frequency classes and under-sampling the high-frequency ones. Each (meme, entity) pair is dropped with a pre-defined probability, following various class sampling strategies.
+We evaluated 6 different sampling strategies illustrated in Figure~\ref{fig:sampling}:
+\begin{description}
+	\item[\textsl{Micro}] does not subsample.
+    This optimize the Micro-\fone{}, which puts more weight on samples labeled \texttt{other} due to their sheer number.
+	\item[\textsl{Macro}] subsamples memes such that the label distribution is uniform.
+    This implies dropping a large amount of \texttt{other} samples in order to lower their frequency.
+	\item[\textsl{In-between}] is a compromise between \textsl{micro} and \textsl{macro}, balancing between matching the evaluation loss and seeing a more diverse set of samples.
+	\item[\textsl{Interpolate}] drifts from \textsl{micro} to \textsl{macro} during training.
+	For the first epoch, the memes are sampled according to the empirical distribution (\textsl{micro}); while the last epoch is sampled to have a uniform label distribution (\textsl{macro}).
+	\item[\textsl{Cycle}] alternates between \textsl{micro} and \textsl{macro} (2-epoch \textsl{short cycle}) or between \textsl{micro}, \textsl{macro} and two different \textsl{in-between} (4-epoch \textsl{long cycle}).
+\end{description}
+
+For the last two strategies, the sampling rates are updated at the end of each epoch during training.
+In general, these \emph{dynamic} sampling strategies performed better than sampling strategies with a fixed rate for the whole training duration.
+
+\begin{figure}
+	\centering
+	\input{figures/subsample.tex}
+	\caption{
+		Target frequencies of the various strategies during training.
+		The \textsl{micro} strategy corresponds to using the empirical class distribution in the dataset, that is hero 2.7\%, villain 13.9\%, victim 5.2\% and other 78.2\%.}
+	\label{fig:sampling}
+\end{figure}
+
+\subsection{Ensembling}
+\label{sec:ensembling}
+In order to further improve our results, we build several ensemble of our models.
+We filter-out models with a low validation macro-\fone{} and experiment with several ensembling techniques.
+Due to the small size of the dataset, we did not create an additional split to evaluate our ensembling approach.
+In this context, overfitting the validation set is a risk.
+Two of the ensembling methods we evaluate are therefore non-parametric.
+These non-parametric strategies take the average or the median probability assigned to each class by all models.
+
+Preliminary results indicate that training a linear model to weight the output of our various models is tedious and does not improve over non-parametric strategies.
+We therefore turn towards gradient boosted trees \citep{gradient_boosting} trained by XGBoost \citep{xgboost}.
+XGBoost builds an ensemble of decision trees, whose internal nodes correspond to conditions on our models' output, and whose leaves correspond to a predicted semantic role.
+Boosted trees have the potential to outperform non-parametric methods by better capturing the scale of various models' output, however it has the downside of being very prone to overfitting.

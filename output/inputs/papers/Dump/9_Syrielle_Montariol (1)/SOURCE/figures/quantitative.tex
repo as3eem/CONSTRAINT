@@ -1,0 +1,23 @@
+\begin{tabular}{l l r r}
+\toprule
+	\multirow{2}{*}{Encoder} & \multirow{2}{*}{Classifier} & \multicolumn{2}{c}{Macro-\fone{}} \\
+	\cmidrule(lr){3-4}
+	& & \multicolumn{1}{c}{mean} & \multicolumn{1}{c}{std} \\
+\midrule
+	OFA & MLP & 44.6 & 0.5 \\
+	OFA & Seq2seq & 44.0 & 0.9 \\
+\midrule
+	CLIP & MLP & \textbf{47.0} & 0.5 \\
+	CLIP$^*$ & Attention & 42.3 & 1.7 \\
+\midrule
+    VisualBERT$^*$ & MLP & 43.1 & 0.2 \\
+	VisualBERT$^*$ & Attention & 42.3 & 1.8 \\
+\midrule
+	\multicolumn{2}{l}{Ensemble mean   } & 47.9 & - \\
+	\multicolumn{2}{l}{Ensemble median } & 47.5 & - \\
+	\multicolumn{2}{l}{Ensemble XGBoost} & 47.6 & - \\
+\midrule
+	\multicolumn{2}{l}{Challenge's top score} & 58.7 & - \\
+	\multicolumn{2}{l}{Human} & 65.5 & 4.6 \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,12 @@
+\section{Conclusion}
+
+In this work, we propose several systems to solve the task of classifying entity roles in memes. We focus on comparing classification models -- MLP, Attention and Seq2seq systems -- on top of pre-trained multimodal encoder: CLIP, VisualBERT and OFA. Our best standalone system uses the CLIP encoder with MLP classifier, but our best score is obtained using ensembling of a large number of models. 
+We also compare several sampling strategies to deal with the class imbalance issue, proposing dynamic sampling methods that outperform the standard uniform (``\textsl{macro}'') sampling.
+
+As a preliminary future work, more or less straightforward processing can be performed on the dataset, at the entity-level (using an entity linker to resolve surface forms to entity identifiers, e.g. merging entities "US" and "United States" together); at the OCR-level (performing lexical normalization \cite{samuel-straka-2021-ufal} to deal with OCR errors and meme-specific syntax); and at the image-level (removing the text from the image, for a less noisy image embedding).
+
+To improve the model, entity representation is key. We wish to train global entity embedding, shared across the whole dataset, and contextualised entity embeddings, aligning the entity's vector representation in the image and in the OCR of the meme (when there is an explicit mention of it).
+
+%\item Other models: Perceiver (stared but didn't have time to make it work), Uniter, Ernie-ViL.
+%\item Framework MMF: started creating dataset and model classes but too much work and all documentation is outdated or absent. Moreover, most models that their propose are already available on other libraries with easy-to-plug systems, or even on huggingface.
+%We did not explicitly take into account the position of the caption in the image, which is sometimes crucial to understand the role of several entities.

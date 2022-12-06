@@ -1,0 +1,118 @@
+\NewDocumentCommand\distrib{m m m m m}{
+	\pgfmathsetmacro{\xa}{1.25*(#3)}
+	\pgfmathsetmacro{\xb}{1.25*(#3+#4)}
+	\pgfmathsetmacro{\xc}{1.25*(#3+#4+#5)}
+	\pgfmathsetmacro{\xd}{1.25}
+	\coordinate (#1-a) at (#2, 0);
+	\coordinate (#1-b) at (#2, \xa);
+	\coordinate (#1-c) at (#2, \xb);
+	\coordinate (#1-d) at (#2, \xc);
+	\coordinate (#1-e) at (#2, \xd);
+}
+
+\NewDocumentCommand\drawRegion{m m m m m m}{
+	\fill[Set3-#6] (#1-0-#4)
+		\foreach \i in {#2}{ -- (#1-\i-#4)}
+		\foreach \i in {#3}{ -- (#1-\i-#5)}
+		-- cycle;
+}
+
+\NewDocumentCommand\drawPlot{m m m}{
+	\drawRegion{#1}{#2}{#3}{a}{b}{A};
+	\drawRegion{#1}{#2}{#3}{b}{c}{D};
+	\drawRegion{#1}{#2}{#3}{c}{d}{C};
+	\drawRegion{#1}{#2}{#3}{d}{e}{B};
+}
+
+\begin{tikzpicture}[
+			legend/.style={anchor=north, inner sep=0},
+			braced/.style={decorate,decoration={brace,amplitude=2}},
+		]
+	\begin{scope}[shift={(0.375, 0)}]
+		\distrib{micro-0}{0   }{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+		\distrib{micro-1}{0.25}{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+		\node[legend] at (0.125, 0) {\strut\small micro};
+		\drawPlot{micro}{0,1}{1,0}
+	\end{scope}
+
+	\begin{scope}[shift={(1.7, 0)}]
+		\distrib{affine-0}{0  }{0.081}{0.165}{0.099}
+		\distrib{affine-1}{0.25}{0.081}{0.165}{0.099}
+		\node[legend] at (0.125, 0) {\strut\small in-between};
+		\drawPlot{affine}{0,1}{1,0}
+	\end{scope}
+
+	\begin{scope}[shift={(3.025, 0)}]
+		\distrib{macro-0}{0   }{0.25}{0.25}{0.25}
+		\distrib{macro-1}{0.25}{0.25}{0.25}{0.25}
+		\node[legend] at (0.125, 0) {\strut\small macro};
+		\drawPlot{macro}{0,1}{1,0}
+	\end{scope}
+
+	\begin{scope}[shift={(0, -2)}]
+		\distrib{interpolate-0}{0  }{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+		\distrib{interpolate-1}{1}{0.25}{0.25}{0.25}
+		\node[legend] at (0.5, 0) {\strut\small interpolate};
+		\drawPlot{interpolate}{0,1}{1,0}
+	\end{scope}
+
+	\begin{scope}[shift={(2, -2)}]
+		\foreach \a in {0,0.125,...,0.875}{
+			\pgfmathsetmacro{\x}{int(mod(8*\a, 2))}
+			\pgfmathsetmacro{\b}{\a+0.125}
+			\ifthenelse{\x=0}{
+				\distrib{short-\x-0}{\a}{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+				\distrib{short-\x-1}{\b}{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+			}{
+				\distrib{short-\x-0}{\a}{0.25}{0.25}{0.25}
+				\distrib{short-\x-1}{\b}{0.25}{0.25}{0.25}
+			}
+			\drawPlot{short-\x}{0,1}{1,0}
+		}
+		\node[legend] at (0.5, 0) {\strut\small short cycle};
+	\end{scope}
+
+	\begin{scope}[shift={(4, -2)}]
+		\foreach \a in {0,0.125,...,1.475}{
+			\pgfmathsetmacro{\n}{int(8*\a)}
+			\pgfmathsetmacro{\x}{int(mod(8*\a, 4))}
+			\pgfmathsetmacro{\b}{\a+0.125}
+			\ifthenelse{\x=0}{
+				\distrib{long-\n-0}{\a}{0.176}{0.213}{0.184}
+				\distrib{long-\n-1}{\b}{0.176}{0.213}{0.184}
+			}{
+			\ifthenelse{\x=1}{
+				\distrib{long-\n-0}{\a}{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+				\distrib{long-\n-1}{\b}{0.027121160214685396}{0.13857485440219253}{0.05195843325339728}
+			}{
+			\ifthenelse{\x=2}{
+				\distrib{long-\n-0}{\a}{0.077}{0.163}{0.096}
+				\distrib{long-\n-1}{\b}{0.077}{0.163}{0.096}
+			}{
+				\distrib{long-\n-0}{\a}{0.25}{0.25}{0.25}
+				\distrib{long-\n-1}{\b}{0.25}{0.25}{0.25}
+			}}}
+			\drawPlot{long-\n}{0,1}{1,0}
+		}
+		\node[legend] at (0.75, 0) {\strut\small long cycle};
+	\end{scope}
+
+	\draw[arrow] ($(long-0-0-e) + (0, 1mm)$) -- ($(long-11-1-e) + (0, 1mm)$) node[midway, anchor=south, yshift=-1mm] {\footnotesize training time};
+
+	%\draw[braced] (macro-1-b) -- (macro-1-a) node[midway, anchor=west, xshift=0.5mm] {\footnotesize heroes};
+	%
+	%\draw (macro-1-c) -- ($(macro-1-c) + (1mm, 0)$);
+	%\draw (macro-1-b) -- ($(macro-1-b) + (1mm, 0)$);
+	%\draw[braced] ($(macro-1-c) + (1mm, 0)$) -- ($(macro-1-b) + (1mm, 0)$) node[midway, anchor=west, xshift=0.5mm] {\footnotesize villains};
+	%
+	%\draw[braced] (macro-1-d) -- (macro-1-c) node[midway, anchor=west, xshift=0.5mm] {\footnotesize victims};
+	%
+	%\draw (macro-1-e) -- ($(macro-1-e) + (1mm, 0)$);
+	%\draw (macro-1-d) -- ($(macro-1-d) + (1mm, 0)$);
+	%\draw[braced] ($(macro-1-e) + (1mm, 0)$) -- ($(macro-1-d) + (1mm, 0)$) node[midway, anchor=west, xshift=0.5mm] {\footnotesize others};
+
+	\draw[braced] (macro-1-b) -- (macro-1-a) node[midway, anchor=west, xshift=0.3mm] {\footnotesize\strut heroes};
+	\draw[braced] (macro-1-c) -- (macro-1-b) node[midway, anchor=west, xshift=0.3mm] {\footnotesize\strut villains};
+	\draw[braced] (macro-1-d) -- (macro-1-c) node[midway, anchor=west, xshift=0.3mm] {\footnotesize\strut victims};
+	\draw[braced] (macro-1-e) -- (macro-1-d) node[midway, anchor=west, xshift=0.3mm] {\footnotesize\strut others};
+\end{tikzpicture}
